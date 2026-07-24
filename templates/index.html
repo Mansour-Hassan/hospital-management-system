@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة السكرتير - نظام إدارة المستشفى</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        html[lang="en"] * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: url('/static/tabuk-2.jpg') center/cover no-repeat fixed;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: linear-gradient(135deg, #1a5f3d 0%, #0d3a23 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+            color: white !important;
+            margin-right: 20px;
+        }
+
+        /* Header Controls - مسافات محسّنة */
+        .navbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+        html[lang="en"] .navbar-controls {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        .language-btn, .logout-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .language-btn {
+            background: white;
+            color: #1a5f3d;
+            border: 2px solid white;
+        }
+
+        .language-btn:hover {
+            background: #1a5f3d;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container-main {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header-section h1 {
+            color: #1a5f3d;
+            font-weight: 700;
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .username-display {
+            color: #1a5f3d;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Tabs Navigation */
+        .nav-tabs {
+            border-bottom: 2px solid #1a5f3d;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: #666;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s;
+            padding: 12px 20px;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #1a5f3d;
+            border-bottom-color: #1a5f3d;
+        }
+
+        .nav-link.active {
+            color: #1a5f3d;
+            border-bottom-color: #1a5f3d;
+            background: none;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Form Section */
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .form-section h3 {
+            color: #1a5f3d;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #1a5f3d;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #1a5f3d 0%, #0d3a23 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-weight: 600;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Patient Info Box */
+        .patient-info {
+            background: #e7f3ff;
+            border-right: 4px solid #1a5f3d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        html[lang="en"] .patient-info {
+            border-right: none;
+            border-left: 4px solid #1a5f3d;
+        }
+
+        .patient-info h5 {
+            color: #1a5f3d;
+            font-weight: 700;
+        }
+
+        .patient-info p {
+            margin-bottom: 8px;
+        }
+
+        /* Slot Buttons */
+        .slot-button {
+            padding: 12px 15px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: white;
+        }
+
+        .slot-button.available {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        .slot-button.available:hover {
+            background-color: #28a745;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .slot-button.unavailable {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Table */
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, #1a5f3d 0%, #0d3a23 100%);
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-controls {
+                gap: 10px;
+            }
+
+            .language-btn, .logout-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <span id="app-title">نظام إدارة المستشفى</span>
+            </span>
+            
+            <div class="navbar-controls">
+                <button class="language-btn" id="lang-toggle" onclick="toggleLanguage()">
+                    EN
+                </button>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <span id="logout-text">تسجيل الخروج</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-main">
+        <!-- Header -->
+        <div class="header-section">
+            <h1>
+                <span id="panel-title">لوحة السكرتير</span>
+            </h1>
+            <span class="username-display" id="username-display"></span>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" onclick="switchTab(event, 'create-patient')">
+                    <span id="tab-create">إنشاء ملف مريض</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="switchTab(event, 'book-appointment')">
+                    <span id="tab-book">حجز موعد</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="switchTab(event, 'search-patient')">
+                    <span id="tab-search">البحث عن مريض</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" onclick="switchTab(event, 'appointments-list')">
+                    <span id="tab-list">قائمة المواعيد</span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+
+        <!-- 1. Create Patient Tab -->
+        <div id="create-patient" class="tab-content active">
+            <div class="form-section">
+                <h3>
+                    <span id="create-title">إنشاء ملف مريض جديد</span>
+                </h3>
+
+                <div id="create-alert"></div>
+
+                <form id="create-patient-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-id">رقم الهوية *</label>
+                            <input type="text" class="form-control" id="id_card" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-name">الاسم الكامل *</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-birth">تاريخ الميلاد *</label>
+                            <input type="date" class="form-control" id="birthdate" required onchange="calculateAge()">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-age">العمر</label>
+                            <input type="number" class="form-control" id="age" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-phone">رقم الهاتف *</label>
+                            <input type="tel" class="form-control" id="number_phone" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="label-gender">النوع *</label>
+                            <select class="form-select" id="gender" required>
+                                <option value="">اختر النوع</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <span id="btn-create">إنشاء الملف</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <span id="btn-clear">مسح البيانات</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. Book Appointment Tab -->
+        <div id="book-appointment" class="tab-content">
+            <div class="form-section">
+                <h3>
+                    <span id="book-title">حجز موعد جديد</span>
+                </h3>
+
+                <div id="appointment-alert"></div>
+
+                <!-- Search Patient -->
+                <div class="mb-4">
+                    <label class="form-label" id="search-label">البحث عن المريض (رقم الهوية) *</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="search_id_card">
+                        <button class="btn btn-primary" type="button" onclick="searchPatientForAppointment()">
+                            <span id="search-btn">بحث</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Patient Info -->
+                <div id="patient-info-box" style="display: none;">
+                    <div class="patient-info">
+                        <h5 id="patient-data-title">بيانات المريض</h5>
+                        <p><strong id="patient-name-label">الاسم:</strong> <span id="patient-name"></span></p>
+                        <p><strong id="patient-id-label">رقم الهوية:</strong> <span id="patient-id"></span></p>
+                        <p><strong id="patient-age-label">العمر:</strong> <span id="patient-age"></span></p>
+                        <p><strong id="patient-visits-label">عدد الزيارات:</strong> <span id="patient-visits" style="color: #1a5f3d; font-weight: bold;"></span></p>
+                    </div>
+                </div>
+
+                <!-- Appointment Form -->
+                <form id="book-appointment-form" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="specialty-label">التخصص *</label>
+                            <select class="form-select" id="specialty" required onchange="loadDoctors()">
+                                <option value="">اختر التخصص</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="doctor-label">الطبيب *</label>
+                            <select class="form-select" id="doctor" required onchange="loadAvailableSlots()">
+                                <option value="">اختر الطبيب</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" id="date-label">تاريخ الموعد *</label>
+                            <input type="date" class="form-control" id="appointment_date" required onchange="loadAvailableSlots()">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" id="slots-label">الأوقات المتاحة *</label>
+                        <div id="available-slots" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" id="notes-label">الملاحظات</label>
+                        <textarea class="form-control" id="notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success">
+                            <span id="confirm-btn">تأكيد الحجز</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <span id="btn-clear2">مسح البيانات</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3. Search Patient Tab -->
+        <div id="search-patient" class="tab-content">
+            <div class="form-section">
+                <h3>
+                    <span id="search-title">البحث عن مريض</span>
+                </h3>
+
+                <div class="mb-4">
+                    <label class="form-label" id="search-id-label">رقم الهوية *</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="search_id">
+                        <button class="btn btn-primary" type="button" onclick="searchPatient()">
+                            <span id="search-btn2">بحث</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="search-result"></div>
+            </div>
+        </div>
+
+        <!-- 4. Appointments List Tab -->
+        <div id="appointments-list" class="tab-content">
+            <div class="form-section">
+                <h3>
+                    <span id="list-title">قائمة المواعيد</span>
+                </h3>
+
+                <div id="appointments-table-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Complete Translations
+        const translations = {
+            ar: {
+                appTitle: "نظام إدارة المستشفى",
+                panelTitle: "لوحة السكرتير",
+                logoutText: "تسجيل الخروج",
+                tabCreate: "إنشاء ملف مريض",
+                tabBook: "حجز موعد",
+                tabSearch: "البحث عن مريض",
+                tabList: "قائمة المواعيد",
+                createTitle: "إنشاء ملف مريض جديد",
+                labelId: "رقم الهوية",
+                labelName: "الاسم الكامل",
+                labelBirth: "تاريخ الميلاد",
+                labelAge: "العمر",
+                labelPhone: "رقم الهاتف",
+                labelGender: "النوع",
+                btnCreate: "إنشاء الملف",
+                btnClear: "مسح البيانات",
+                bookTitle: "حجز موعد جديد",
+                searchLabel: "البحث عن المريض (رقم الهوية)",
+                searchBtn: "بحث",
+                patientDataTitle: "بيانات المريض",
+                patientNameLabel: "الاسم:",
+                patientIdLabel: "رقم الهوية:",
+                patientAgeLabel: "العمر:",
+                patientVisitsLabel: "عدد الزيارات:",
+                specialtyLabel: "التخصص",
+                doctorLabel: "الطبيب",
+                dateLabel: "تاريخ الموعد",
+                slotsLabel: "الأوقات المتاحة",
+                notesLabel: "الملاحظات",
+                confirmBtn: "تأكيد الحجز",
+                searchTitle: "البحث عن مريض",
+                searchIdLabel: "رقم الهوية",
+                listTitle: "قائمة المواعيد",
+                welcome: "مرحباً",
+                selectGender: "اختر النوع",
+                selectSpecialty: "اختر التخصص",
+                selectDoctor: "اختر الطبيب",
+                male: "ذكر",
+                female: "أنثى",
+                noAppointments: "لا توجد مواعيد مسجلة حالياً",
+                patientNotFound: "المريض غير موجود في النظام",
+                errorMessage: "حدث خطأ في الاتصال بالخادم",
+                availableSlots: "أماكن متاحة",
+                confirmLogout: "هل تريد تسجيل الخروج؟",
+            },
+            en: {
+                appTitle: "Hospital Management System",
+                panelTitle: "Secretary Panel",
+                logoutText: "Logout",
+                tabCreate: "Create Patient File",
+                tabBook: "Book Appointment",
+                tabSearch: "Search Patient",
+                tabList: "Appointments List",
+                createTitle: "Create New Patient File",
+                labelId: "ID Card Number",
+                labelName: "Full Name",
+                labelBirth: "Birth Date",
+                labelAge: "Age",
+                labelPhone: "Phone Number",
+                labelGender: "Gender",
+                btnCreate: "Create File",
+                btnClear: "Clear Data",
+                bookTitle: "Book New Appointment",
+                searchLabel: "Search Patient (ID Number)",
+                searchBtn: "Search",
+                patientDataTitle: "Patient Data",
+                patientNameLabel: "Name:",
+                patientIdLabel: "ID Number:",
+                patientAgeLabel: "Age:",
+                patientVisitsLabel: "Number of Visits:",
+                specialtyLabel: "Specialty",
+                doctorLabel: "Doctor",
+                dateLabel: "Appointment Date",
+                slotsLabel: "Available Times",
+                notesLabel: "Notes",
+                confirmBtn: "Confirm Booking",
+                searchTitle: "Search Patient",
+                searchIdLabel: "ID Number",
+                listTitle: "Appointments List",
+                welcome: "Welcome",
+                selectGender: "Select gender",
+                selectSpecialty: "Select specialty",
+                selectDoctor: "Select doctor",
+                male: "Male",
+                female: "Female",
+                noAppointments: "No appointments registered yet",
+                patientNotFound: "Patient not found in the system",
+                errorMessage: "Server connection error",
+                availableSlots: "available slots",
+                confirmLogout: "Are you sure you want to logout?",
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'ar';
+
+        function t(key) {
+            return translations[currentLanguage][key] || key;
+        }
+
+        function updatePageLanguage() {
+            // Navbar
+            document.getElementById('app-title').textContent = t('appTitle');
+            document.getElementById('logout-text').textContent = t('logoutText');
+            document.getElementById('lang-toggle').textContent = currentLanguage === 'ar' ? 'EN' : 'AR';
+            
+            // Header
+            document.getElementById('panel-title').textContent = t('panelTitle');
+            
+            // Tabs
+            document.getElementById('tab-create').textContent = t('tabCreate');
+            document.getElementById('tab-book').textContent = t('tabBook');
+            document.getElementById('tab-search').textContent = t('tabSearch');
+            document.getElementById('tab-list').textContent = t('tabList');
+            
+            // Create Patient Form
+            document.getElementById('create-title').textContent = t('createTitle');
+            document.getElementById('label-id').textContent = t('labelId') + ' *';
+            document.getElementById('label-name').textContent = t('labelName') + ' *';
+            document.getElementById('label-birth').textContent = t('labelBirth') + ' *';
+            document.getElementById('label-age').textContent = t('labelAge');
+            document.getElementById('label-phone').textContent = t('labelPhone') + ' *';
+            document.getElementById('label-gender').textContent = t('labelGender') + ' *';
+            document.getElementById('btn-create').textContent = t('btnCreate');
+            document.getElementById('btn-clear').textContent = t('btnClear');
+            
+            // Book Appointment Form
+            document.getElementById('book-title').textContent = t('bookTitle');
+            document.getElementById('search-label').textContent = t('searchLabel') + ' *';
+            document.getElementById('search-btn').textContent = t('searchBtn');
+            document.getElementById('patient-data-title').textContent = t('patientDataTitle');
+            document.getElementById('patient-name-label').textContent = t('patientNameLabel');
+            document.getElementById('patient-id-label').textContent = t('patientIdLabel');
+            document.getElementById('patient-age-label').textContent = t('patientAgeLabel');
+            document.getElementById('patient-visits-label').textContent = t('patientVisitsLabel');
+            document.getElementById('specialty-label').textContent = t('specialtyLabel') + ' *';
+            document.getElementById('doctor-label').textContent = t('doctorLabel') + ' *';
+            document.getElementById('date-label').textContent = t('dateLabel') + ' *';
+            document.getElementById('slots-label').textContent = t('slotsLabel') + ' *';
+            document.getElementById('notes-label').textContent = t('notesLabel');
+            document.getElementById('confirm-btn').textContent = t('confirmBtn');
+            document.getElementById('btn-clear2').textContent = t('btnClear');
+            
+            // Search Patient Form
+            document.getElementById('search-title').textContent = t('searchTitle');
+            document.getElementById('search-id-label').textContent = t('searchIdLabel') + ' *';
+            document.getElementById('search-btn2').textContent = t('searchBtn');
+            
+            // Appointments List
+            document.getElementById('list-title').textContent = t('listTitle');
+            
+            // Update select options
+            const genderSelect = document.getElementById('gender');
+            genderSelect.options[0].textContent = t('selectGender');
+            genderSelect.options[1].textContent = t('male');
+            genderSelect.options[2].textContent = t('female');
+            
+            const specialtySelect = document.getElementById('specialty');
+            specialtySelect.options[0].textContent = t('selectSpecialty');
+            
+            const doctorSelect = document.getElementById('doctor');
+            doctorSelect.options[0].textContent = t('selectDoctor');
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('language', currentLanguage);
+            
+            // Change HTML direction
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+            
+            // Update page content
+            updatePageLanguage();
+        }
+
+        function switchTab(event, tabName) {
+            event.preventDefault();
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.closest('.nav-link').classList.add('active');
+            
+            // Load data if needed
+            if (tabName === 'appointments-list') {
+                loadAppointments();
+            }
+        }
+
+        function calculateAge() {
+            const birthdate = document.getElementById('birthdate').value;
+            if (birthdate) {
+                const today = new Date();
+                const birth = new Date(birthdate);
+                let age = today.getFullYear() - birth.getFullYear();
+                const monthDiff = today.getMonth() - birth.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                    age--;
+                }
+                document.getElementById('age').value = age;
+            }
+        }
+
+        function createPatient(e) {
+            e.preventDefault();
+            
+            const data = {
+                id_card: document.getElementById('id_card').value,
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                birthdate: document.getElementById('birthdate').value,
+                number_phone: document.getElementById('number_phone').value,
+                gender: document.getElementById('gender').value
+            };
+
+            fetch('/api/create_patient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const alertDiv = document.getElementById('create-alert');
+                if (data.success) {
+                    alertDiv.innerHTML = `<div class="alert alert-success">
+                        ${data.message}<br>
+                        <strong>${t('labelId')}:</strong> ${data.mrn}
+                    </div>`;
+                    document.getElementById('create-patient-form').reset();
+                } else {
+                    alertDiv.innerHTML = `<div class="alert alert-danger">
+                        ${data.message}
+                    </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('create-alert').innerHTML = `<div class="alert alert-danger">
+                    ${t('errorMessage')}
+                </div>`;
+            });
+        }
+
+        function loadSpecialties() {
+            fetch('/api/specialties')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const select = document.getElementById('specialty');
+                    select.innerHTML = `<option value="">${t('selectSpecialty')}</option>`;
+                    data.specialties.forEach(specialty => {
+                        select.innerHTML += `<option value="${specialty}">${specialty}</option>`;
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function loadDoctors() {
+            const specialty = document.getElementById('specialty').value;
+            if (!specialty) return;
+
+            fetch(`/api/doctors/${specialty}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const select = document.getElementById('doctor');
+                    select.innerHTML = `<option value="">${t('selectDoctor')}</option>`;
+                    data.doctors.forEach(doctor => {
+                        select.innerHTML += `<option value="${doctor.id}">${doctor.name}</option>`;
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function loadAvailableSlots() {
+            const doctorId = document.getElementById('doctor').value;
+            const date = document.getElementById('appointment_date').value;
+            
+            if (!doctorId || !date) return;
+
+            fetch(`/api/available_slots/${doctorId}/${date}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const slotsDiv = document.getElementById('available-slots');
+                    slotsDiv.innerHTML = '';
+                    
+                    data.slots.forEach(slot => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = `slot-button ${slot.is_available ? 'available' : 'unavailable'}`;
+                        button.disabled = !slot.is_available;
+                        button.innerHTML = `
+                            <span class="time">${slot.time}</span>
+                            <span class="available-count">${slot.available} ${t('availableSlots')}</span>
+                        `;
+                        
+                        if (slot.is_available) {
+                            button.onclick = () => selectSlot(button, slot.time);
+                        }
+                        
+                        slotsDiv.appendChild(button);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        let selectedSlot = null;
+
+        function selectSlot(button, time) {
+            document.querySelectorAll('.slot-button').forEach(btn => {
+                btn.style.borderWidth = '2px';
+            });
+            
+            button.style.borderWidth = '4px';
+            button.style.borderColor = '#1a5f3d';
+            selectedSlot = time;
+        }
+
+        function searchPatientForAppointment() {
+            const idCard = document.getElementById('search_id_card').value;
+            if (!idCard) {
+                alert(t('searchLabel'));
+                return;
+            }
+
+            fetch(`/get_patient/${idCard}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.has_file) {
+                    const patient = data.patient;
+                    document.getElementById('patient-name').textContent = patient.name;
+                    document.getElementById('patient-id').textContent = patient.id_card;
+                    document.getElementById('patient-age').textContent = patient.age;
+                    document.getElementById('patient-visits').textContent = patient.visit_count;
+                    
+                    document.getElementById('patient-info-box').style.display = 'block';
+                    document.getElementById('book-appointment-form').style.display = 'block';
+                    
+                    document.getElementById('book-appointment-form').dataset.patientId = idCard;
+                } else {
+                    alert(t('patientNotFound'));
+                    document.getElementById('patient-info-box').style.display = 'none';
+                    document.getElementById('book-appointment-form').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(t('errorMessage'));
+            });
+        }
+
+        function bookAppointment(e) {
+            e.preventDefault();
+            
+            if (!selectedSlot) {
+                alert(t('slotsLabel'));
+                return;
+            }
+
+            const patientId = document.getElementById('book-appointment-form').dataset.patientId;
+            const data = {
+                id_card: patientId,
+                doctor_id: parseInt(document.getElementById('doctor').value),
+                appointment_date: document.getElementById('appointment_date').value,
+                appointment_time: selectedSlot,
+                notes: document.getElementById('notes').value
+            };
+
+            fetch('/api/book_appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const alertDiv = document.getElementById('appointment-alert');
+                if (data.success) {
+                    alertDiv.innerHTML = `<div class="alert alert-success">
+                        ${data.message}<br>
+                        <strong>${t('patientNameLabel')}</strong> ${data.appointment.patient_name}<br>
+                        <strong>${t('doctorLabel')}:</strong> ${data.appointment.doctor_name}<br>
+                        <strong>${t('dateLabel')}:</strong> ${data.appointment.appointment_date} - ${data.appointment.appointment_time}<br>
+                        <strong>${t('patientVisitsLabel')}</strong> <span style="color: #1a5f3d; font-weight: bold;">${data.appointment.visit_count}</span>
+                    </div>`;
+                    
+                    document.getElementById('book-appointment-form').reset();
+                    document.getElementById('patient-info-box').style.display = 'none';
+                    document.getElementById('book-appointment-form').style.display = 'none';
+                    document.getElementById('search_id_card').value = '';
+                    selectedSlot = null;
+                } else {
+                    alertDiv.innerHTML = `<div class="alert alert-danger">
+                        ${data.message}
+                    </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('appointment-alert').innerHTML = `<div class="alert alert-danger">
+                    ${t('errorMessage')}
+                </div>`;
+            });
+        }
+
+        function searchPatient() {
+            const idCard = document.getElementById('search_id').value;
+            if (!idCard) {
+                alert(t('searchLabel'));
+                return;
+            }
+
+            fetch(`/get_patient/${idCard}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('search-result');
+                if (data.success && data.has_file) {
+                    const patient = data.patient;
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            <h5>${t('patientDataTitle')}</h5>
+                            <p><strong>${t('patientNameLabel')}</strong> ${patient.name}</p>
+                            <p><strong>${t('patientIdLabel')}</strong> ${patient.id_card}</p>
+                            <p><strong>${t('patientAgeLabel')}</strong> ${patient.age}</p>
+                            <p><strong>${t('labelPhone')}:</strong> ${patient.number_phone}</p>
+                            <p><strong>${t('labelGender')}:</strong> ${patient.gender}</p>
+                            <p><strong>${t('patientVisitsLabel')}</strong> <span style="color: #1a5f3d; font-weight: bold;">${patient.visit_count}</span></p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">
+                        ${t('patientNotFound')}
+                    </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('search-result').innerHTML = `<div class="alert alert-danger">
+                    ${t('errorMessage')}
+                </div>`;
+            });
+        }
+
+        function loadAppointments() {
+            fetch('/api/appointments')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('appointments-table-container');
+                if (data.success && data.appointments.length > 0) {
+                    let html = `
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>${t('patientNameLabel')}</th>
+                                    <th>${t('doctorLabel')}</th>
+                                    <th>${t('specialtyLabel')}</th>
+                                    <th>${t('dateLabel')}</th>
+                                    <th>الوقت</th>
+                                    <th>${t('notesLabel')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.appointments.forEach(apt => {
+                        html += `
+                            <tr>
+                                <td>${apt.patient_name}</td>
+                                <td>${apt.doctor_name}</td>
+                                <td>${apt.doctor_specialty}</td>
+                                <td>${apt.appointment_date}</td>
+                                <td>${apt.appointment_time}</td>
+                                <td>${apt.notes || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                            </tbody>
+                        </table>
+                    `;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `<div class="alert alert-info">
+                        ${t('noAppointments')}
+                    </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('appointments-table-container').innerHTML = `<div class="alert alert-danger">
+                    ${t('errorMessage')}
+                </div>`;
+            });
+        }
+
+        function handleLogout() {
+            if (confirm(t('confirmLogout'))) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                window.location.href = '/';
+            }
+        }
+
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const username = localStorage.getItem('username');
+            
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/';
+            }
+            
+            if (username) {
+                document.getElementById('username-display').textContent = `${t('welcome')}، ${username}`;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLanguage;
+            updatePageLanguage();
+            checkLogin();
+            loadSpecialties();
+            document.getElementById('create-patient-form').addEventListener('submit', createPatient);
+            document.getElementById('book-appointment-form').addEventListener('submit', bookAppointment);
+        });
+    </script>
+</body>
+</html>

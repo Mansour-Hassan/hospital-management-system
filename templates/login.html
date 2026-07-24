@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول السكرتير - مستشفى الرعاية الطبية</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: url('/static/tabuk-2.jpg') center/cover no-repeat fixed;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 50px;
+            color: #1a5f3d;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a5f3d;
+            box-shadow: 0 0 0 3px rgba(26, 95, 61, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1a5f3d 0%, #0d3a23 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(26, 95, 61, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .alert-danger {
+            background-color: #fee;
+            color: #c33;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner-border {
+            color: #1a5f3d;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .input-group-text {
+            border: 2px solid #e0e0e0;
+            background: white;
+        }
+
+        .input-group input:focus + .input-group-text {
+            border-color: #1a5f3d;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <img src="/static/tabuk-logo.gif" alt="جامعة تبوك" style="width: 120px; height: 120px; margin-bottom: 15px;">
+            <h1>مستشفى الرعاية الطبية</h1>
+            <p>تسجيل دخول السكرتير</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username">
+                    <i class="fas fa-user"></i> اسم المستخدم
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="أدخل اسم المستخدم"
+                    required
+                    autocomplete="username"
+                >
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> كلمة المرور
+                </label>
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="أدخل كلمة المرور"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <span class="input-group-text" onclick="togglePasswordVisibility()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="form-group">
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        id="rememberMe" 
+                        name="rememberMe"
+                    >
+                    
+                    <label class="form-check-label" for="rememberMe">
+                        تذكرني
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </button>
+
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">جاري التحميل...</span>
+                </div>
+                <span class="ms-2">جاري التحقق من البيانات...</span>
+            </div>
+        </form>
+
+        <!-- Footer -->
+        <div class="footer-text">
+<!--            <p>© 2024 مستشفى الرعاية الطبية. جميع الحقوق محفوظة.</p> -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Server configuration
+        const SERVER_URL = 'http://localhost:5001';
+        const LOGIN_ENDPOINT = '/login';
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Show alert message
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Handle login
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Validation
+            if (!username || !password) {
+                showAlert('danger', '<strong>خطأ!</strong> يرجى ملء جميع الحقول.');
+                return;
+            }
+
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loadingSpinner.classList.add('show');
+
+            try {
+                // Send login request to server
+                const response = await fetch(`${SERVER_URL}${LOGIN_ENDPOINT}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Success
+                    showAlert('success', `<strong>مرحباً!</strong> ${data.message}`);
+
+                    // Save login info
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('loginTime', new Date().toISOString());
+
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+
+                    // Redirect to home page after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = '/index';
+                    }, 1500);
+                } else {
+                    // Error
+                    showAlert('danger', `<strong>خطأ!</strong> ${data.message || 'فشل تسجيل الدخول. يرجى التحقق من البيانات.'}`);
+                    loginBtn.disabled = false;
+                    loadingSpinner.classList.remove('show');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('danger', `<strong>خطأ في الاتصال!</strong> ${error.message || 'حدث خطأ أثناء محاولة تسجيل الدخول.'}`);
+                loginBtn.disabled = false;
+                loadingSpinner.classList.remove('show');
+            }
+        }
+
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = '/index';
+            }
+        });
+
+        // Allow Enter key to submit form
+        document.getElementById('loginForm').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin(e);
+            }
+        });
+    </script>
+</body>
+</html>
